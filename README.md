@@ -12,16 +12,6 @@ This project implements a full Brain-Computer Interface (BCI) pipeline to classi
 
 The objective is to transform raw EEG signals into discriminative features and evaluate multiple classifiers.
 
-## How to Run
-
-1- Download the dataset from [BCI Competition III – Dataset IVa](https://www.bbci.de/competition/iii/)
-
-2- Open MATLAB
-
-3- Start by loading one of the subjects. ` data_set_IVa_al.mat ` is chosen here.
-
-4- Run: ` run_pipeline.m `
-
 ## Project Motivation
 
 Motor imagery EEG signals contain important discriminative information mainly in the mu (8–13 Hz) and beta (13–30 Hz) frequency ranges. However, the most informative frequency sub-bands can vary between subjects.
@@ -37,6 +27,37 @@ To address this, this project decomposes the EEG signal into multiple overlappin
 - Subject-specific EEG feature representation
 - Classification of motor imagery tasks using machine learning
 
+## Why FBCSP?
+
+Standard CSP extracts spatial filters from a selected frequency band. FBCSP extends this by applying CSP across multiple frequency sub-bands, allowing the model to capture discriminative patterns that may appear in different parts of the mu and beta rhythms.
+
+This is especially useful in motor imagery BCI because EEG patterns are highly subject-specific.
+
+---
+## How to Run
+
+1- Download the dataset from [BCI Competition III – Dataset IVa](https://www.bbci.de/competition/iii/)
+
+2- Open MATLAB
+
+3- Start by loading one of the subjects. ` data_set_IVa_al.mat ` is chosen here.
+
+4- Run: ` run_pipeline.m `
+
+## Configuration
+Inside `run_pipeline.m`, you can modify:
+``` 
+config.dataset_path = 'data_set_IVa_al.mat';
+config.frequency_band = 'mu';        % options: 'mu', 'mu_beta', 'mu_beta_gamma'
+config.spatial_filter = 'CAR';       % options: 'CAR', 'Low Laplacian', 'High Laplacian'
+config.filter_order = 3;
+config.train_ratio = 0.70;
+config.num_csp_pairs = 1;
+config.trial_length_s = 3.5;
+config.plot_figures = true;
+config.visualise_csp = true;
+```
+
 ## Pipeline Overview
 
 1. Load EEG motor imagery data
@@ -46,11 +67,20 @@ To address this, this project decomposes the EEG signal into multiple overlappin
 5. Concatenate sub-band CSP features
 6. Train and evaluate a classifier
 
-## Why FBCSP?
 
-Standard CSP extracts spatial filters from a selected frequency band. FBCSP extends this by applying CSP across multiple frequency sub-bands, allowing the model to capture discriminative patterns that may appear in different parts of the mu and beta rhythms.
+Three classifiers are implemented:
 
-This is especially useful in motor imagery BCI because EEG patterns are highly subject-specific.
+- Support Vector Machine (SVM)
+- K-Nearest Neighbors (KNN)
+- Linear Discriminant Analysis (LDA)
+
+## Results
+### Accuracy Comparison
+| Classifier | Accuracy |
+|-----------|----------|
+| SVM       | 82.35%   |
+| KNN       | 86.76%  |
+| LDA       | 92.65%  |
 
 ## Relation to Real-Time BCI
 
