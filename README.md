@@ -161,12 +161,11 @@ The figure compares the classification performance of the [baseline CSP pipeline
 
 This highlights the importance of combining spatial and spectral information in EEG decoding.
 
-## Relation to Real-Time BCI
-
-This project is still an offline motor imagery decoding pipeline. However, it provides a stronger feature extraction foundation for a future real-time EEG decoding simulation using sliding windows and latency-aware inference.
 
 ## Next Extension
 
-The next planned extension is:
+This project is still an offline motor imagery decoding pipeline. However, it provides a stronger feature extraction foundation for a future real-time EEG decoding simulation using sliding windows and latency-aware inference.
+
+The next extension is:
 
 [Real-time EEG decoding simulation using sliding windows and streaming predictions.](https://github.com/SanazRezvani/real-time-bci)
