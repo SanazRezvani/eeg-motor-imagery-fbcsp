@@ -146,6 +146,8 @@ The FBCSP extension extracted CSP features from 10 overlapping sub-bands between
 
 The best-performing classifier was KNN, achieving 91.18% accuracy.
 
+![csp_vs_fbcsp_comparison](csp_vs_fbcsp_comparison.png)
+
 ## Key Takeaways
 
 FBCSP:
