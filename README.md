@@ -1,72 +1,118 @@
-# EEG Motor Imagery Decoding with FBCSP
+# EEG Motor Imagery Classification using FBCSP (MATLAB)
 
-This repository is an extension of my previous EEG motor imagery classification project, which you can check out [here](https://github.com/SanazRezvani/eeg-motor-imagery-csp)     
+This project implements a full Brain-Computer Interface (BCI) pipeline to classify motor imagery EEG signals (Right Hand vs Foot). The objective is to transform raw EEG signals into discriminative features and evaluate multiple classifiers.
 
-In the original project, I implemented a baseline motor imagery decoding pipeline using Common Spatial Patterns (CSP). In this extension, I improve the feature extraction stage by adding a Filter Bank Common Spatial Pattern (FBCSP) approach across the mu and beta rhythms.
-
-This is a complete MATLAB pipeline for **EEG-based motor imagery classification** using signal processing, Filter Bank Common Spatial Patterns (FBCSP), and machine learning.
+This repository is an extension of my previous EEG motor imagery classification project, which you can check out [here](https://github.com/SanazRezvani/eeg-motor-imagery-csp). In the original project, I implemented an EEG-based motor imagery classification pipeline using Common Spatial Patterns (CSP). In this extension, I improve the feature extraction stage by adding a **Filter Bank Common Spatial Pattern (FBCSP)** approach across the mu and beta rhythms.
 
 This work is based on **BCI Competition III – Dataset IVa**. Read the [Dataset description](https://www.bbci.de/competition/iii/desc_IVa.html)
-
-This project implements a full Brain-Computer Interface (BCI) pipeline to classify **motor imagery EEG signals** (Right Hand vs Foot).
-
-The objective is to transform raw EEG signals into discriminative features and evaluate multiple classifiers.
 
 ## Project Motivation
 
 Motor imagery EEG signals contain important discriminative information mainly in the mu (8–13 Hz) and beta (13–30 Hz) frequency ranges. However, the most informative frequency sub-bands can vary between subjects.
 
-To address this, this project decomposes the EEG signal into multiple overlapping frequency sub-bands and applies CSP separately to each sub-band. This allows the model to extract more subject-specific spatial features compared with a single broad-band CSP approach.
+To address this, this project decomposes the EEG signal into multiple overlapping frequency sub-bands and applies CSP separately to each sub-band. This allows the model to extract more subject-specific spatial features compared with a single broad-band CSP approach for improved motor imagery decoding.
 
 ## Key Features
 
 - Extension of a baseline CSP-based motor imagery decoding pipeline
-- Filter bank decomposition across mu and beta rhythms
-- Overlapping sub-bands within 8–30 Hz
+- Filter bank decomposition across mu and beta rhythms (8–30 Hz)
+- 10 overlapping sub-bands (4 Hz width, 2 Hz overlap)
 - CSP feature extraction from each sub-band
-- Subject-specific EEG feature representation
+- Concatenation of sub-band features
 - Classification of motor imagery tasks using machine learning
 
-## Why FBCSP?
-
-Standard CSP extracts spatial filters from a selected frequency band. FBCSP extends this by applying CSP across multiple frequency sub-bands, allowing the model to capture discriminative patterns that may appear in different parts of the mu and beta rhythms.
-
-This is especially useful in motor imagery BCI because EEG patterns are highly subject-specific.
-
 ---
-## How to Run
 
-1- Download the dataset from [BCI Competition III – Dataset IVa](https://www.bbci.de/competition/iii/)
+## Pipeline Overview
 
-2- Open MATLAB
+### 1. Load EEG motor imagery data
 
-3- Start by loading one of the subjects. ` data_set_IVa_al.mat ` is chosen here.
+- Download the dataset from [BCI Competition III – Dataset IVa](https://www.bbci.de/competition/iii/)
 
-4- Run: ` run_pipeline.m `
+- Open MATLAB
 
-## Configuration
+- Start by loading one of the subjects. ` data_set_IVa_al.mat ` is chosen here.
+
+- Run: ` run_pipeline.m `
+
 Inside `run_pipeline.m`, you can modify:
 ``` 
 config.dataset_path = 'data_set_IVa_al.mat';
-config.frequency_band = 'mu';        % options: 'mu', 'mu_beta', 'mu_beta_gamma'
 config.spatial_filter = 'CAR';       % options: 'CAR', 'Low Laplacian', 'High Laplacian'
 config.filter_order = 3;
 config.train_ratio = 0.70;
 config.num_csp_pairs = 1;
 config.trial_length_s = 3.5;
 config.plot_figures = true;
-config.visualise_csp = true;
+config.visualise_csp = false;
+```
+### 2. Apply filter bank decomposition across 8–30 Hz  
+
+EEG signals are decomposed into overlapping sub-bands across the mu and beta rhythms (8–30 Hz), where motor imagery-related activity is known to occur. This filter bank approach allows the model to capture subject-specific discriminative patterns that may not be visible in a single broad frequency band.
+
+```
+Sub-bands used:
+8–12, 10–14, 12–16, ..., 26–30 Hz
 ```
 
-## Pipeline Overview
+### 3. Apply Spatial filtering to each sub-band
 
-1. Load EEG motor imagery data
-2. Preprocess EEG signals
-3. Apply filter bank decomposition across 8–30 Hz
-4. Extract CSP features from each sub-band
-5. Concatenate sub-band CSP features
-6. Train and evaluate a classifier
+Implemented spatial filters:
 
+- [`apply_spatial_filter.m`](apply_spatial_filter.m) (main interface)  
+- [`car_filter.m`](car_filter.m) (CAR)  
+- [`laplacian_low.m`](laplacian_low.m) (Low Laplacian)  
+- [`laplacian_high.m`](laplacian_high.m) (High Laplacian)  
+
+These filters enhance spatial resolution and reduce noise.
+
+
+### 4. Extract CSP features from each sub-band
+
+Implemented in: 
+[`compute_csp_filters.m`](compute_csp_filters.m) (compute_csp_filters) 
+
+For each frequency sub-band, Common Spatial Pattern (CSP) is applied to extract discriminative spatial features between the two motor imagery classes.
+
+CSP computes spatial filters that maximise variance for one class while minimising it for the other. This results in projections that emphasise class-specific neural activity.
+```
+features_band(:, trial_idx) = var(projected_trial, 0, 2);
+```
+
+In this implementation:
+
+CSP is computed independently for each sub-band
+A fixed number of CSP filter pairs are selected per band
+Each trial is projected onto the CSP filters
+The variance of the projected signals is used as the feature representation
+
+This allows the model to capture frequency-specific spatial patterns, which are critical in motor imagery EEG analysis.
+
+![CSP Animation](results/csp_animation.gif)
+
+### 5. Concatenate features across sub-bands
+
+The CSP features extracted from each sub-band are concatenated to form a single feature vector for each trial.
+
+Since each sub-band captures complementary information from different parts of the mu and beta frequency ranges, combining them provides a richer representation of the underlying neural activity.
+
+In this project:
+
+Each sub-band contributes a set of CSP features
+Features from all sub-bands are stacked vertically
+The final feature vector includes information from all frequency bands
+```
+all_features = [features_band1;
+                features_band2;
+                ...
+                features_bandN];
+```
+In this implementation:
+```
+10 sub-bands × 2 CSP features = 20 features per trial
+```
+
+### 6. Train and evaluate classifiers
 
 Three classifiers are implemented:
 
@@ -80,9 +126,9 @@ The FBCSP extension extracted CSP features from 10 overlapping sub-bands between
 
 | Classifier | Accuracy |
 |---|---:|
-| SVM | 82.35% |
-| KNN | 86.76% |
-| LDA | 92.65% |
+| SVM | 86.76% |
+| KNN | 91.18% |
+| LDA | 83.82% |
 
 The best-performing classifier was LDA, achieving 92.65% accuracy.
 
