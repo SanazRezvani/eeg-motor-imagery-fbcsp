@@ -75,12 +75,16 @@ Three classifiers are implemented:
 - Linear Discriminant Analysis (LDA)
 
 ## Results
-### Accuracy Comparison
+
+The FBCSP extension extracted CSP features from 10 overlapping sub-bands between 8–30 Hz. With one CSP pair per sub-band, this produced 20 features per trial.
+
 | Classifier | Accuracy |
-|-----------|----------|
-| SVM       | 82.35%   |
-| KNN       | 86.76%  |
-| LDA       | 92.65%  |
+|---|---:|
+| SVM | 82.35% |
+| KNN | 86.76% |
+| LDA | 92.65% |
+
+The best-performing classifier was LDA, achieving 92.65% accuracy.
 
 ## Relation to Real-Time BCI
 
