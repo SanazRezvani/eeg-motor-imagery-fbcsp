@@ -144,18 +144,20 @@ The FBCSP extension extracted CSP features from 10 overlapping sub-bands between
 | KNN | 91.18% |
 | LDA | 83.82% |
 
-The best-performing classifier was KNN, achieving 91.18% accuracy.
+### CSP vs FBCSP Comparison
+
+The figure compares the classification performance of the [baseline CSP pipeline](https://github.com/SanazRezvani/eeg-motor-imagery-csp) and the extended FBCSP approach across three classifiers: SVM, KNN, and LDA.
 
 ![csp_vs_fbcsp_comparison](csp_vs_fbcsp_comparison.png)
 
 ## Key Takeaways
 
-FBCSP:
-- Increases feature dimensionality from 2 to 20 features per trial  
-- Captures frequency-specific spatial patterns in EEG signals  
-- Provides a more expressive representation than single-band CSP  
-- Performance gains depend on subject variability and classifier choice  
-- KNN achieved the best performance in this implementation  
+- FBCSP increases feature dimensionality from 2 to 20 features per trial  
+- FBCSP captures frequency-specific spatial patterns in EEG signals  
+- FBCSP provides a more expressive representation than single-band CSP
+- FBCSP outperforms CSP across all three classifiers
+- The highest accuracy is achieved using KNN with FBCSP (91.18%)
+- FBCSP improves performance by extracting CSP features from multiple overlapping sub-bands across the mu and beta rhythms
 
 This highlights the importance of combining spatial and spectral information in EEG decoding.
 
