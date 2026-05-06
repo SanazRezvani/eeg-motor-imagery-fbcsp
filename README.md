@@ -88,7 +88,7 @@ The variance of the projected signals is used as the feature representation
 
 This allows the model to capture frequency-specific spatial patterns, which are critical in motor imagery EEG analysis.
 
-![CSP Animation](results/csp_animation.gif)
+![CSP Animation](csp_animation.gif)
 
 ### 5. Concatenate features across sub-bands
 
@@ -130,7 +130,7 @@ The FBCSP extension extracted CSP features from 10 overlapping sub-bands between
 | KNN | 91.18% |
 | LDA | 83.82% |
 
-The best-performing classifier was LDA, achieving 92.65% accuracy.
+The best-performing classifier was KNN, achieving 91.18% accuracy.
 
 ## Relation to Real-Time BCI
 
