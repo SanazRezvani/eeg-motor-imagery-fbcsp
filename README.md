@@ -6,11 +6,16 @@ This repository is an extension of my previous EEG motor imagery classification 
 
 This work is based on **BCI Competition III – Dataset IVa**. Read the [Dataset description](https://www.bbci.de/competition/iii/desc_IVa.html)
 
-## Project Motivation
+## Why FBCSP?
 
-Motor imagery EEG signals contain important discriminative information mainly in the mu (8–13 Hz) and beta (13–30 Hz) frequency ranges. However, the most informative frequency sub-bands can vary between subjects.
+Motor imagery EEG activity is distributed across multiple frequency ranges, primarily within the mu (8–13 Hz) and beta (13–30 Hz) bands and the most informative frequency sub-bands can vary between subjects. Applying CSP on a single broad band may overlook frequency-specific patterns 
 
-To address this, this project decomposes the EEG signal into multiple overlapping frequency sub-bands and applies CSP separately to each sub-band. This allows the model to extract more subject-specific spatial features compared with a single broad-band CSP approach for improved motor imagery decoding.
+Filter Bank CSP (FBCSP) addresses this by:
+- Decomposing EEG signals into multiple sub-bands
+- Extracting spatial features from each sub-band
+- Capturing complementary information across frequencies
+
+This leads to a richer feature representation and can improve classification performance, especially in subject-specific decoding scenarios.
 
 ## Key Features
 
@@ -20,6 +25,15 @@ To address this, this project decomposes the EEG signal into multiple overlappin
 - CSP feature extraction from each sub-band
 - Concatenation of sub-band features
 - Classification of motor imagery tasks using machine learning
+
+## Design Choices
+
+- **Sub-band design:** 4 Hz bandwidth with 2 Hz overlap to balance frequency resolution and redundancy  
+- **Number of CSP pairs:** 1 pair per sub-band (2 features) to control dimensionality  
+- **Classifier selection:** Compared SVM, KNN, and LDA for robustness  
+- **Feature representation:** Variance of CSP-projected signals, a standard and interpretable choice for motor imagery BCI  
+
+These design decisions aim to balance performance, interpretability, and computational efficiency.
 
 ---
 
@@ -132,6 +146,17 @@ The FBCSP extension extracted CSP features from 10 overlapping sub-bands between
 
 The best-performing classifier was KNN, achieving 91.18% accuracy.
 
+## Key Takeaways
+
+FBCSP:
+- Increases feature dimensionality from 2 to 20 features per trial  
+- Captures frequency-specific spatial patterns in EEG signals  
+- Provides a more expressive representation than single-band CSP  
+- Performance gains depend on subject variability and classifier choice  
+- KNN achieved the best performance in this implementation  
+
+This highlights the importance of combining spatial and spectral information in EEG decoding.
+
 ## Relation to Real-Time BCI
 
 This project is still an offline motor imagery decoding pipeline. However, it provides a stronger feature extraction foundation for a future real-time EEG decoding simulation using sliding windows and latency-aware inference.
@@ -140,4 +165,4 @@ This project is still an offline motor imagery decoding pipeline. However, it pr
 
 The next planned extension is:
 
-➡️ Real-time EEG decoding simulation using sliding windows and streaming predictions.
+Real-time EEG decoding simulation using sliding windows and streaming predictions.
