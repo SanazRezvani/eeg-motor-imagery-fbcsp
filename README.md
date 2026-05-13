@@ -168,4 +168,4 @@ This project is still an offline motor imagery decoding pipeline. However, it pr
 
 The next extension is:
 
-[Real-time EEG decoding simulation using sliding windows and streaming predictions.](https://github.com/SanazRezvani/real-time-bci)
+[Real-time EEG decoding simulation using sliding windows.](https://github.com/SanazRezvani/real-time-bci)
