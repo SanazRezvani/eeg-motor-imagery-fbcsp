@@ -121,7 +121,7 @@ all_features = [features_band1;
                 ...
                 features_bandN];
 ```
-In this implementation:
+In this implementation we have:
 ```
 10 sub-bands × 2 CSP features = 20 features per trial
 ```
