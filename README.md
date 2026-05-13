@@ -112,9 +112,9 @@ Since each sub-band captures complementary information from different parts of t
 
 In this project:
 
-Each sub-band contributes a set of CSP features
-Features from all sub-bands are stacked vertically
-The final feature vector includes information from all frequency bands
+- Each sub-band contributes a set of CSP features
+- Features from all sub-bands are stacked vertically
+- The final feature vector includes information from all frequency bands
 ```
 all_features = [features_band1;
                 features_band2;
